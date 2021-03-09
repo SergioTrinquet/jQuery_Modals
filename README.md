@@ -1,4 +1,4 @@
-# JQuery - Encart avec options
+# JQuery - fenêtre modale avec options
 
 
 *Prévoir d'ajouter des options :*  
