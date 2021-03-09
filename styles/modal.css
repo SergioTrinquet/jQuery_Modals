@@ -1,0 +1,142 @@
+/* Pour éviter au début quand on est en haut de page, de scroller vers le bas avant la fin de l'animation */
+html.noscroll {
+    height: 100vh;
+    overflow-y: hidden;
+    padding-right: 15px; /* Avoid width reflow */
+}
+
+.msk {
+    position: fixed;
+    z-index:10000;
+    top: 0;
+    left: 0;
+    background-color:#000000;
+    filter:alpha(opacity=0);
+	-moz-opacity:0;
+    opacity:0;
+    transition: opacity 0.4s ease-in-out;
+}
+.msk.display {
+    width: 100%;
+    height: 100%;
+    opacity: 0.6;
+}
+
+
+[data-modal="true"]:not(.display) { display: none; }
+[data-modal="true"].display { display: block; }
+
+[data-modal="true"].float.right {
+    float: right; 
+    margin: 0 0 20px 20px;
+}
+
+[data-modal="true"].float.left {
+    float: left; 
+    margin: 0 20px 20px 0;
+}
+
+[data-modal="true"].fixed { position: fixed; }
+
+.modal,
+.shadow {
+    /* Valeur encart par défaut si pas surchargé via attribut DOM 'data-*' */
+    position: absolute;
+    width: 300px; 
+}
+
+.modal {
+    background-color: #efefef;
+    color:#8d8c8c;
+}
+
+.shadow.visible {
+    border: dashed 4px gray;
+    box-sizing: border-box;
+}
+
+
+.TexteInfoFocus	{
+	font-size: 14px;
+	line-height: 20px;
+    text-align: center;
+    padding: 25px;
+    /*border: solid 15px #ffffff;*/
+    
+    /*max-height:190px;/*300px de max-height - 2*40px de padding vertical - 2*15px de border*/
+    /* Juste pour IE */
+	scrollbar-face-color: #f6f6f6;
+	scrollbar-track-color: #f9f9f9;
+	scrollbar-arrow-color: lightgray;
+	scrollbar-shadow-color: white;
+	scrollbar-highlight-color: white;
+	scrollbar-3dlight-color: #b7b7b7;
+	scrollbar-darkshadow-color: #c5c5c5;	
+}
+.TexteInfoFocusContenu { 
+    overflow: inherit; /* ?? */
+}
+.TexteInfoFocusContenu a {
+    color: #707070;
+	text-decoration: underline;
+}
+
+.linkToRedimModal{
+	color:#909090;
+	text-decoration: underline;
+    cursor:pointer;
+    display: inline-block;
+    margin-top: 10px;
+}
+.linkToRedimModal:hover,
+.TexteInfoFocusContenu a:hover {
+	color:#d80000;
+}
+
+#closeShortMsg {
+	position:absolute;
+	cursor: pointer;
+	top:15px;
+    right:15px;
+}
+            
+#clone_modal {
+    position: fixed;
+    z-index:10001;
+    margin-top: auto;
+    width: 30%;
+    min-width: 100px;
+    height:auto;
+    /*max-height:70%;*/max-height:none;
+    -webkit-box-shadow: 0 0 15px 0 #444444;
+    -moz-box-shadow: 0 0 15px 0 #444444;
+    box-shadow: 0 0 15px 0 #444444;
+}
+
+.modal .TexteInfoFocusContenu {
+    max-height: none;
+}
+
+.modal #IconeResizeSmall {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    z-index: 3;
+    transition: all 0.15s ease-in-out;
+}
+.modal #IconeResizeSmall:hover {
+    transform: scale(1.2);
+}
+
+.modal.transition :not(.Hidden) {
+    transition: all 0.2s ease-in-out;
+} 
+.modal.Hidden,
+.modal .Hidden  {
+    filter:alpha(opacity=0);
+	-moz-opacity:0;
+    opacity:0;
+}
