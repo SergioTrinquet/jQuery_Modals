@@ -3,8 +3,9 @@
 
 *Prévoir d'ajouter des options :*  
 - *sur l'option shadow (dotted, slashed, plain)*
-- *closable*
--  *backgroundColor*
+- *border-radius sur la modale* <= A FINIR
+- *box-shadow sur la modale* <= PAS SUR
+- *link ou button pour lien pour s'agrandir => redimLinkDisplay: {type: 'link' (default) or 'button', text: '', style:{}}*
 
 ## Présentation
 
@@ -20,7 +21,7 @@ Ce widget permet d'intégrer facilement une ou plusieurs fenêtres modales avec 
 ## Installation
 
 #### 1 - Fichiers requis
-Dans la balise 'head', intégrez le CSS suivant : 
+A l'intérieur des balises `<head></head>`, intégrez le CSS suivant : 
 * Le lien faisant appel à la font "fontawesome", 
 * Le fichier "modal.css" (dans ce projet, répertoire "/styles")  
 
@@ -46,7 +47,7 @@ Intégrez une balise HTML de type conteneur (div, span, p) avec un selecteur pou
 ```
 
 #### 3 - Script
- Placez votre script javascript juste avant la balise de fermeture "body".  
+ Placez votre script javascript juste avant la balise de fermeture `</body>`.  
 Exemple de code:
 ```
 $('.selector').setModal({
@@ -64,7 +65,7 @@ $('.selector').setModal({
 Le contenu et le style CSS du contenu d'une fenêtre modale doivent être placés dans un fichier HTML à part (Dans ce projet */templates/defaultTemplate.html*).  
 Si vous intégrez plusieurs fenêtres modales avec pour chacune des contenus distincts, il faudra alors un fichier HTML par fenêtre modale.  
 
-Le code du fichier HTML doit avoir une balise 'script' par état (état par défaut, état lorsque redimensionné), dont les id sont respectivement 'tpl_default', et 'tpl_redim'.
+Le code du fichier HTML doit avoir une balise `<script>` par état (état par défaut, état lorsque redimensionné), dont les id sont respectivement 'tpl_default', et 'tpl_redim'.
 
 Note : Si la fenêtre modale n'est pas configurée pour être redimensionnée, il n'y a pas besoin de la balise 'script' avec l'id 'tpl_redim'.
 
@@ -105,11 +106,11 @@ Structure du code du template pour le contenu d'une fenêtre modale :
 **Valeur par défaut**: *"absolute"*
 
 Défini la propriété CSS 'display' de l'encart, donc détermine son positionnement par rapport au reste du contenu de la page.  
-Valeurs possibles : *"absolute"*, *"fixed"*, *"floatLeft"*, *"floatRight"*
+Valeurs possibles : *"block"*, *"absolute"*, *"fixed"*, *"floatLeft"*, *"floatRight"*
 
 ### originalWidth
 **Type**: *String*  
-**Valeur par défaut**: *"200px"*
+**Valeur par défaut**: *"300px"*
 
 Défini la propriété CSS 'width' de l'encart dans sa configuration originale (avant d'être redimensionné)
 
@@ -152,3 +153,46 @@ Note: Cette option n'a d'intérêt que si l'option "redim" est à *true*.
 **Valeur par défaut**: *"templates/defaultTemplate.html"*
 
 URL relative des templates accueillant le contenu HTML et la mise en forme CSS de la fenêtre modale dans son état original, et optionnellement lorsqu'elle est redimensionnée (si la fenêtre modale est configurée à cet effet).
+
+### closable
+**Type**: *Booléen*  
+**Valeur par défaut**: *false*
+
+Affiche une croix en haut à droite de la fenêtre modale dans son état initial (pas redimensionné). Lorsque l'on clique dessus, la fenêtre en question se ferme. 
+
+### bgColor
+**Type**: *String*  
+**Valeur par défaut**: *"#efefef"*
+
+Détermine la/les couleur(s) de fond de l'encart.  
+Cette option joue sur la propriété CSS 'background-color' : Il est donc possible de réaliser des dégradés, et de jouer sur l'opacité de la couleur de fond (ex: *rgba(255, 255, 255, 0.5)*).
+
+### padding
+**Type**: *String*  
+**Valeur par défaut**: *"25px"*
+
+Défini la propriété CSS 'padding' de l'encart, dans son état original comme lorsqu'il est redimensionné.  
+Comme pour la propriété CSS native, il est possible de déterminer le padding de chacun des cotés de l'encart indépendamment des autres en utilisant la syntaxe appropriée de type *"padding-top padding-right padding-bottom padding-left"*
+
+```
+$('.selector').setModal({
+    padding: "10px 0 20px 5px"
+});
+```
+
+### margin
+**Type**: *String*  
+**Valeur par défaut**: *"0px"*
+
+Défini la propriété CSS 'margin' de l'encart, dans son état original comme lorsqu'il est redimensionné.  
+Comme pour la propriété CSS native, il est possible de déterminer le margin de chacun des cotés de l'encart indépendamment des autres en utilisant la syntaxe appropriée de type *"margin-top margin-right margin-bottom margin-left"*
+
+```
+$('.selector').setModal({
+    margin: "7px 0 20em 15px"
+});
+```
+
+### borderRadius
+**Type**: *String*  
+**Valeur par défaut**: *"0px"*
