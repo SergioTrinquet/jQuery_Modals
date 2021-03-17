@@ -16,6 +16,19 @@
         body { 
             font-family: 'Quicksand', verdana; 
         }
+        .header {
+            position: fixed;
+            z-index: 10000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px;
+            background-color: rgba(221, 221, 221, 0.486);
+            font-size: 18px;
+            color: rgb(43, 43, 43);
+            text-align: center;
+        }
         .content {
             font-size: 18px;
             line-height: 21px;
@@ -35,11 +48,12 @@
 
 </head>
 <body>
+    <div class="header">Exemples d'encarts possibles</div>
     <div class="content">
 
         <!-- Exemple de fenêtres modales -->
         <div id="exemple_modal_1"></div>
-        <div class="exemple_modal_2"></div>
+        <div class="exemple_modal_2"></div>;
 
         Sit est nunc, metus vulputate facilisis. Sociis varius ac, viverra aliquet in nam sociosqu commodo at volutpat nisi ut. Tellus quisque consectetur enim sit cursus rhoncus ridiculus cubilia pharetra nulla venenatis neque? Litora est interdum nullam felis enim gravida duis praesent. Dolor sollicitudin dis ad justo lacinia pretium. In porta dis vitae eros lobortis. Vehicula sodales sapien senectus. Tempor suscipit tincidunt suspendisse rhoncus vulputate praesent nisl tristique sagittis enim. Velit.
         Dictum vehicula risus accumsan, primis sapien posuere. Rutrum sollicitudin taciti iaculis mi. Suspendisse, ullamcorper parturient vulputate himenaeos gravida sodales. Phasellus habitant sem congue porttitor? Platea, pretium risus ridiculus dis nascetur consectetur vulputate condimentum viverra. Ornare euismod vulputate class potenti imperdiet posuere senectus. Lorem mi sit congue aliquam pretium odio cras neque; duis gravida velit. Id aliquam viverra penatibus tristique non sed penatibus commodo. Suscipit inceptos id morbi pretium. Fusce tempus facilisi luctus dolor proin at netus ornare. Euismod eros, eget vulputate ornare augue dignissim convallis parturient? Pellentesque et faucibus sit suscipit eleifend. Purus augue pharetra justo nec suspendisse eleifend interdum consectetur curae;. Curae;, ad!
@@ -55,17 +69,26 @@
     <script type="text/javascript">
         $('#exemple_modal_1').setModal({
             position: "floatRight", 
-            originalWidth: "300px",
+            //position: "block",
+            //originalWidth: "250px",
+            originalWidth: "60%",
             redim: true,
             redimLink: "Agrandir",
-            redimWidth: "600px",
+            redimWidth: "90%",
             animationSpeed: 2000,
-            shadow: true
+            shadow: true,
+            closable: true,
+            bgColor: "#4a4a4a",
+            margin: "0 0 20px 30px",
+            padding: "50px",
+            borderRadius: "25px",
+            //redimLinkStyle: {}
         });
 
         $('.exemple_modal_2').setModal({
             position: "fixed", 
             originalWidth: "200px",
+            //originalWidth: "20%",
             redim: true,
             redimWidth: "850px",
             animationSpeed: 600,
