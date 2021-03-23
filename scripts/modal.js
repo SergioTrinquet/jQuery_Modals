@@ -5,9 +5,11 @@
         position: "absolute",
         originalWidth: "300px",
         redim: false,
-        redimLink: "Le communiqué dans son intégralité",
         redimWidth: "800px",
-        url: "templates/defaultTemplate.html",
+        redimLinkText: "Le communiqué dans son intégralité", 
+        redimLinkType: "link",
+        redimLinkStyle: {},
+        url: "/templates/defaultTemplate.html",
         animationSpeed: 500
     }
 
@@ -45,18 +47,52 @@ document.fonts.ready.then(function() {
         DOM_elems.each(function() {
 
             var _ = this; // Chaque élément DOM compris dans le sélecteur
-            //console.warn(_); //TEST
 
             // Fusion de la config par défaut et de celle passée en paramètre par l'utilisateur
             var goodSettings = Object.assign({}, defaultSettings, customSettings);
+
             
-           
+            /*=================== Gestion des erreurs sur les options de 'setModal()' ===================*/
+            try {
+                // Test sur respect du type pour chaque option
+                var typeOptions = [
+                    { options: ["position", "originalWidth", "redimLinkText", "redimLinkType", "redimWidth", "url", "bgColor", "padding", "margin"], type: "string" },
+                    { options: ["animationSpeed", "borderRadius"], type: "number" },
+                    { options: ["redim", "shadow", "closable"], type: "boolean" },
+                    { options: ["redimLinkStyle"], type: "object" }
+                ];
+                for(var to of typeOptions) {
+                    for(var option of to.options) {
+                        if(typeof goodSettings[option] !== "undefined" && typeof goodSettings[option] !== to.type) throw new Error("La valeur pour déterminer l'option '" + option + "' doit être de type '" + to.type + "' !!");
+                    }
+                }
+
+                // Test sur format pour options qui déterminent largeur des encarts
+                var options = ["originalWidth", "redimWidth"];
+                var regex = new RegExp(/^[0-9]+(px|pt|pc|in|cm|mm|em|ex|ch|rem|vw|vh|vmin|vmax|%)$/);
+                for(option of options) {
+                    if(regex.test(goodSettings[option]) == false) throw new Error("L'option '" + option + "' est incorrect (valeur erronée => " + goodSettings[option] + ")");   
+                }
+
+                // Tests spécifiques pour certaines options
+                if(goodSettings.position !== "block" && goodSettings.position !== "absolute" && goodSettings.position !== "fixed" && goodSettings.position !== "floatLeft" && goodSettings.position !== "floatRight") throw new Error("Les valeurs possibles pour l'option 'position' sont: 'block', 'absolute', 'fixed, 'floatLeft' et 'floatRight'");
+                if(goodSettings.redimLinkType !== "link" && goodSettings.redimLinkType !== "button") throw new Error("Les valeurs possibles pour l'option 'redimLinkType' sont 'link' ou 'button'");
+                if(goodSettings.borderRadius < 1 || goodSettings.borderRadius > 25) throw new Error("La valeur pour l'option 'borderRadius' doit être comprise entre 1 et 25");
+                
+            } catch (error) {
+                console.error(_, `setModal() => ERREUR dans la configuration de l'encart : ${error.message}`);
+            }
+            /*=================== FIN : Gestion des erreurs sur les options de 'setModal' ===================*/
+            
+
+
             /*=================== Objet dont 'OriginalModal' et 'CloneModal' héritent ===================*/
             function Modal() {
                 this.DOMtag = null,
                 this.dimensions = {
+                    height: 0,
                     width: 0,
-                    height: 0
+                    absoluteWidth: 0
                 }
                 this.positions = {
                     top: 0,
@@ -64,27 +100,15 @@ document.fonts.ready.then(function() {
                 }
             }
 
-            /* // Pour prélever Hauteur et Largeur en px de l'élément passé en paramètre
-            Modal.prototype.getSize = function(el) {
-                this.dimensions.height = el.outerHeight(); 
-                this.dimensions.width = el.outerWidth();
-                console.warn("this.dimensions.height : " + el.outerHeight() + " | this.dimensions.width : " + el.outerWidth()); //TEST 
-            } */
-
-
-            
-            Modal.prototype.getSize_V2 = function(el, typeModal) {
-                this.dimensions.height = el.outerHeight(); 
-                this.dimensions.width = (typeModal == 'original' ? goodSettings.originalWidth : (typeModal == 'clone' ? goodSettings.redimWidth : null));
-                console.warn(this);
-                console.warn("this.dimensions.height : " + el.outerHeight() + " | this.dimensions.width : " + this.dimensions.width); //TEST 
-            }
-
-            // ESSAI
-            Modal.prototype.getSize_V3 = function() {
-                console.log(this.DOMtag.is("#clone_modal") ? "getSize sur le clone" : "getSize sur l'original"); //TEST
+            // Pour prélever Hauteur et Largeur en px de l'élément passé en paramètre
+            Modal.prototype.getSize = function(typeWidth) {
+                //console.log(this.DOMtag.is("#clone_modal") ? "getSize sur le clone" : "getSize sur l'original"); //TEST
                 this.dimensions.height = this.DOMtag.outerHeight();
-                this.dimensions.width = this.DOMtag.is("#clone_modal") ? goodSettings.redimWidth : goodSettings.originalWidth;
+                if(typeWidth == 'absoluteWidth') {
+                    this.dimensions.absoluteWidth = this.DOMtag.outerWidth(); // 'width' en px
+                } else if(typeWidth === undefined) {
+                    this.dimensions.width = this.DOMtag.is("#clone_modal") ? goodSettings.redimWidth : goodSettings.originalWidth; // Affecte 'width' que ce soit en unité relative (ex: %) ou absolue (ex: px)
+                }
                 console.warn("this.dimensions.height : " + this.dimensions.height + " | this.dimensions.width : " + this.dimensions.width); //TEST 
             }
            
@@ -145,6 +169,7 @@ document.fonts.ready.then(function() {
                 Modal.call(this); // Héritage de l'objet 'Modal'
 
                 this.redimBt = "",
+                this.classShadow = "",
                 this.templatesText = null,
                 this.key = null
             }
@@ -162,15 +187,23 @@ document.fonts.ready.then(function() {
                         <div class='TexteInfoFocusContenu'></div>\
                     </div>";
 
+                // Option 'background-color', 'margin'
+                var stylesToAdd = { "width" : goodSettings.originalWidth }; // Pour fixer largeur encart si dans paramètres de l'utilisateur
+                if('bgColor' in goodSettings){ stylesToAdd["background-color"] = goodSettings.bgColor };  
+                if('margin' in goodSettings){ stylesToAdd["margin"] = goodSettings.margin };   
+                if('boxShadow' in goodSettings){ stylesToAdd["box-shadow"] = goodSettings.boxShadow };   
+
+                // Option 'border-radius'
+                if('borderRadius' in goodSettings){ 
+                    this.classShadow = "br-" + goodSettings.borderRadius.toString();
+                };
+
                 this.DOMtag
+    .removeAttr("style") // Retrait css pour nettoyage avant intégration option(s)
                     .attr("data-modal", true)
                     .html(modalHtmlTags)
-                    .css({ width: goodSettings.originalWidth }); // ou 'this.DOMtag.outerWidth(goodSettings.originalWidth);' => Pour fixer largeur encart si dans paramètres de l'utilisateur : Ajouté le 12/03/21
-
-                // Option 'background-color', 'margin' et'border-radius'
-                if('bgColor' in goodSettings){ this.DOMtag.css({"background-color": goodSettings.bgColor}) };   
-                if('margin' in goodSettings){ this.DOMtag.css({"margin": goodSettings.margin }) };
-                if('borderRadius' in goodSettings){ this.DOMtag.css({"border-radius": goodSettings.borderRadius }) };
+                    .css(stylesToAdd)
+                    .addClass(this.classShadow);
 
 
                 // Affectation de la propriété 'position' en fction du paramètre saisi ou pas par l'utilisateur lors de l'initialisation du modal 
@@ -216,7 +249,8 @@ document.fonts.ready.then(function() {
                     
                     
                     self.templatesText = templates;
-                    self.redimOrNot();
+                    //self.redimOrNot();
+                    self.getLinkToRedim();
 
                     // Insertion texte + optionnellement le lien pour afficher l'intégralité du message dans l'encart Big
                     self.DOMtag
@@ -233,9 +267,6 @@ document.fonts.ready.then(function() {
             
             // Affichage encart original et apparition ou non shadow, lorsque redimensionnement
             OriginalModal.prototype.display = function(val) {
-                if(typeof val === "undefined") { throw new Error("L'argument permettant l'apparition ou non de l'encart à l'état original ou bien sa shadow n'existe pas!"); }
-                if(typeof val !== "boolean") { throw new Error("L'argument permettant l'apparition ou non de l'encart à l'état original ou bien sa shadow doit être un booléen"); }
-
                 if(goodSettings.shadow == true) { 
                     if(val) {
                         this.DOMtag
@@ -244,7 +275,7 @@ document.fonts.ready.then(function() {
                     } else {
                         this.DOMtag
                             .addClass("setShadow") // Disparition couleur fond + Disparition contenu de l'encart autre que shadow
-                            .prepend("<div class='shadow'></div>")   // Ajout dynamique div pour shadow
+                            .prepend("<div class='shadow " + this.classShadow + "'></div>")   // Ajout dynamique div pour shadow
                     }
                 } else {
                     // On cache ou pas l'encart original
@@ -272,21 +303,25 @@ document.fonts.ready.then(function() {
                 clone.init(this.DOMtag, text, this.key);
             }
 
-            OriginalModal.prototype.redimOrNot = function() {
+            /* OriginalModal.prototype.redimOrNot = function() {
                 if(goodSettings.redim) { // Si option redim à 'true'
                     this.getLinkToRedim(); // Affectation valeur à lien pour redimensionner
                 } 
-            }
+            } */
 
             // gestion lien pour agrandir encart
             OriginalModal.prototype.getLinkToRedim = function() {
-                this.redimBt = $(document.createElement('a'))
-                                    .addClass('linkToRedimModal')
-                                    .text(goodSettings.redimLink);
+                if(goodSettings.redim) { // Si option redim à 'true'
+                    var classType = goodSettings.redimLinkType == 'link' ? 'linkToRedimModal' : (goodSettings.redimLinkType == 'button' ? 'fakeButtonToRedimModal' : '');
+                    this.redimBt = $(document.createElement('a'))
+                                        .addClass(classType)
+                                        .css(goodSettings.redimLinkStyle)
+                                        .text(goodSettings.redimLinkText);
 
-                // Création évènement dessus pour créer encart Big (clone de l'encart normal)
-                var self = this;
-                this.redimBt.on('click', function() { self.getDataModalRedim() }); 
+                    // Création évènement dessus pour créer encart Big (clone de l'encart normal)
+                    var self = this;
+                    this.redimBt.on('click', function() { self.getDataModalRedim() }); 
+                }
             }
 
             // Pour agrandir l'encart qd click sur lien
@@ -318,7 +353,7 @@ document.fonts.ready.then(function() {
                                     .clone()
                                     .attr('id', 'clone_modal')
                                     .css("margin", "") // Retrait margin
-                                    .removeClass()
+                                    .removeClass("float right left fixed display")
                                     .addClass("setCentralPosition"); // Ajout CSS pour centrage vertical et horizontal
 
                 
@@ -353,21 +388,19 @@ document.fonts.ready.then(function() {
                 // Ici récup. des données 'positions' et 'dimensions' de l'encart redimensionné avec contenu adéquat (mais pas encore visible) 
                 // qui vont servir ensuite pour l'animation qui suit (de l'état 'par défaut' vers l'état 'redimensionné')
                 this.getPosition();
-                //this.getSize_V2(this.DOMtag, 'clone');
-                this.getSize_V3();
+                this.getSize();
                 console.log("ALLER >>>>> this.positions", this.positions); console.log("ALLER >>>>> this.dimensions", this.dimensions);  //TEST
 
 
                 // Récupération de la position du modal original avec le contenu chargé
                 originModal.getPosition();
                 // Récupération des dimensions du modal original avec le contenu chargé
-                //originModal.getSize_V2(originModal.DOMtag, 'original');
-                originModal.getSize_V3();
+                originModal.getSize("absoluteWidth");
 
                 // On affiche l'encart cloné avec les dimensions et positions de l'encart original, et on cache son contenu 
                 this.DOMtag
                     .outerHeight(originModal.dimensions.height)
-                    .outerWidth(originModal.DOMtag.outerWidth()) // Permet de remplacer le Pourcentage de la largeur si c'est le cas, par une valeur en px
+                    .outerWidth(originModal.dimensions.absoluteWidth) // Permet de remplacer le Pourcentage de la largeur si c'est le cas, par une valeur en px
                     .css({ 'top': originModal.positions.top, 'left': originModal.positions.left })
                     .removeClass('Hidden setCentralPosition')
                     .children().addClass('Hidden');
@@ -395,16 +428,22 @@ document.fonts.ready.then(function() {
             }
 
 
+
+            /* V2 */ /* function noScroll() { 
+                window.scrollTo(0, 0) 
+            } */
+
             // lorsque click sur modal cloné pour retourner au modal original
             CloneModal.prototype.redim_Small = function() {
 
                 // Retrait de l'ascenceur de la fenetre durant transition
-                htmlTag.addClass('noscroll');
-
+                /* V1 */ //htmlTag.addClass('noscroll');
+/* V2 */ //window.addEventListener('scroll', noScroll); // add listener to disable scroll
+/* V3 */disableScroll();
                 
                 // Récupérations des coordonnées (positions et dimensions) de l'encart cloné
                 this.getPosition();
-                console.log("RETOUR >>>>> (CloneModal début) this.positions", this.positions); console.log("RETOUR >>>>> (CloneModal début) this.dimensions", this.dimensions);  //TEST
+                //console.log("RETOUR >>>>> (CloneModal début) this.positions", this.positions); console.log("RETOUR >>>>> (CloneModal début) this.dimensions", this.dimensions);  //TEST
                 
 
                 // Modif CSS sur l'encart cloné avant début transition afin que celle-ci puisse se faire
@@ -417,10 +456,10 @@ document.fonts.ready.then(function() {
                 // Récupérations des coordonnées (positions et dimensions) de l'encart original : 
                 // Recalcul car peut avoir changée entre 1er click pour redimensionner l'encart et celui-ci pour le réduire 
                 // (ex: scroll sur la page peut avoir changé la position, ou/et changement taille de la fenetre peut avoir changé la taille si est exprimée en pourcentage par ex.) 
-                originModal.getPosition();
-                //originModal.getSize(originModal.DOMtag); 
-                console.log("RETOUR >>>>> (originalModal) originModal.positions => From", this.positions, "To", originModal.positions); // TEST
-                console.log("RETOUR >>>>> (originalModal) originModal.dimensions => From", this.dimensions, "To", originModal.dimensions);  //TEST
+                originModal.getPosition(); 
+                originModal.getSize("absoluteWidth");
+                //console.log("RETOUR >>>>> (originalModal) originModal.positions => From", this.positions, "To", originModal.positions); // TEST
+                //console.log("RETOUR >>>>> (originalModal) originModal.dimensions => From", this.dimensions, "To", originModal.dimensions);  //TEST
 
 
                 // Retour aux dimensions et positions de l'encart original
@@ -428,10 +467,10 @@ document.fonts.ready.then(function() {
                     { 
                         left: originModal.positions.left,
                         top: originModal.positions.top,
-                        //width: originModal.dimensions.width, 
-                        //height: originModal.dimensions.height,
-                        width: originModal.DOMtag.outerWidth(), // Valeur désirée en px et non relative en % car l'encart à redimensionner est un enfant direct du tag 'body', ce qui n'est p-ê pas le cas de l'encart original dont il doit prendre les dimensions en fin de transition
-                        height: originModal.DOMtag.outerHeight() 
+                        width: originModal.dimensions.absoluteWidth, 
+                        height: originModal.dimensions.height,
+                        //width: originModal.DOMtag.outerWidth(), // Valeur désirée en px et non relative en % car l'encart à redimensionner est un enfant direct du tag 'body', ce qui n'est p-ê pas le cas de l'encart original dont il doit prendre les dimensions en fin de transition
+                        //height: originModal.DOMtag.outerHeight() 
                     }, 
                     goodSettings.animationSpeed,
                     function () {
@@ -442,7 +481,9 @@ document.fonts.ready.then(function() {
                         // Réapparition encart original
                         originModal.display(true);
                         // Retrait class empechant affichage scroller
-                        htmlTag.removeClass('noscroll');
+                        /* V1 */ //htmlTag.removeClass('noscroll');
+                        /* V2 */ //window.removeEventListener('scroll', noScroll); // add listener to disable scroll
+                        /* V3 */ enableScroll();
                     }
                 );
 
@@ -457,6 +498,27 @@ document.fonts.ready.then(function() {
             originModal.init();
 
         });
+
+
+        /// Ajouté le 22/03/21
+        function disableScroll() {
+            // Get the current page scroll position
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            var scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        
+            // if any scroll is attempted, set this to the previous value
+            /* window.onscroll = function() {
+                window.scrollTo(scrollLeft, scrollTop);
+            }; */
+            window.addEventListener('scroll', noScroll = function() { window.scrollTo(scrollLeft, scrollTop); });
+        }
+        function enableScroll() {
+            /* window.onscroll = function() {}; */
+            window.removeEventListener('scroll', noScroll);
+        }
+        /// FIN Ajout le 22/03/21
+
+
 
 
 });// Ajouté le 08/03/21

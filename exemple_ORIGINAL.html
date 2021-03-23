@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Exemple de fenêtres modales</title>
-    <link href="https://fonts.googleapis.com/css?family=Quicksand:500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
 
     <!-- CSS necessaires pour fonctionnement fenêtres modales -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
@@ -53,7 +54,7 @@
 
         <!-- Exemple de fenêtres modales -->
         <div id="exemple_modal_1"></div>
-        <div class="exemple_modal_2"></div>;
+        <div class="exemple_modal_2"></div>
 
         Sit est nunc, metus vulputate facilisis. Sociis varius ac, viverra aliquet in nam sociosqu commodo at volutpat nisi ut. Tellus quisque consectetur enim sit cursus rhoncus ridiculus cubilia pharetra nulla venenatis neque? Litora est interdum nullam felis enim gravida duis praesent. Dolor sollicitudin dis ad justo lacinia pretium. In porta dis vitae eros lobortis. Vehicula sodales sapien senectus. Tempor suscipit tincidunt suspendisse rhoncus vulputate praesent nisl tristique sagittis enim. Velit.
         Dictum vehicula risus accumsan, primis sapien posuere. Rutrum sollicitudin taciti iaculis mi. Suspendisse, ullamcorper parturient vulputate himenaeos gravida sodales. Phasellus habitant sem congue porttitor? Platea, pretium risus ridiculus dis nascetur consectetur vulputate condimentum viverra. Ornare euismod vulputate class potenti imperdiet posuere senectus. Lorem mi sit congue aliquam pretium odio cras neque; duis gravida velit. Id aliquam viverra penatibus tristique non sed penatibus commodo. Suscipit inceptos id morbi pretium. Fusce tempus facilisi luctus dolor proin at netus ornare. Euismod eros, eget vulputate ornare augue dignissim convallis parturient? Pellentesque et faucibus sit suscipit eleifend. Purus augue pharetra justo nec suspendisse eleifend interdum consectetur curae;. Curae;, ad!
@@ -73,16 +74,20 @@
             //originalWidth: "250px",
             originalWidth: "60%",
             redim: true,
-            redimLink: "Agrandir",
             redimWidth: "90%",
-            animationSpeed: 2000,
+            animationSpeed: 1500,
             shadow: true,
             closable: true,
             bgColor: "#4a4a4a",
             margin: "0 0 20px 30px",
             padding: "50px",
-            borderRadius: "25px",
-            //redimLinkStyle: {}
+            borderRadius: 20,
+            redimLinkText: 'AGRANDIR !!', 
+            redimLinkType: 'button', 
+            redimLinkStyle: {
+                "background-color": "#fff", 
+                "color": "blue"
+            }
         });
 
         $('.exemple_modal_2').setModal({

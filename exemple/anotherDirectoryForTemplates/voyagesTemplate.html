@@ -1,0 +1,130 @@
+<!-- Partie dédiée au modal par défaut -->
+<script id="tpl_default" type="text/html" >
+
+    <style>
+        .illustration {
+            background: center / 130% no-repeat url("images/img_voyages.jpg");
+            height: 116px;
+        }
+        .wrapper {
+            padding: 15px;
+            font-size: 16px;
+            text-align: center;
+            line-height: 24px;
+            color: #7f7f7f;
+        }
+        .titre { 
+            color: #ff0000; 
+            font-size: 19px;
+            line-height: 20px;
+            margin: 0 0 8px 0;
+        }
+        span { 
+            background-color: red; 
+            color: #ffffff; 
+            padding: 0 5px;
+        }
+    </style>
+
+    
+    <!-- Mettre DOM pour modal format original ici -->
+    <div class="illustration"></div>
+    <div class="wrapper">
+        <div class="titre">!! Partez maintenant !!</div>
+        <div class='contenu'>Venez découvrir nos <span>super promos</span> vacances.<br/>Il y a forcément une destination pour vous !</div>
+    </div>
+
+</script>
+
+<!-- Partie dédiée au modal une fois redimensionné (partie facultative) -->
+<script id="tpl_redim" type="text/html" >
+
+    <style>
+        .wrapper {
+            /* background-color: red; */
+            padding: 10px 30px 30px;
+            color: #535353;
+        }
+        .illustration {
+            background: center / 100% no-repeat url("images/img_voyages_Big.jpg");
+            height: 170px;
+        }
+        .titre {
+            color: #ff0505;
+            color: #ff7a05;
+            font-size: 24px;
+            padding: 15px 20px 20px;
+            font-weight: bold;
+        }
+        .destination {
+            font-weight: bold;
+            padding: 6px 0;
+        }
+        .destination > span { display: inline-block; }
+        .destination > span:first-child { 
+            font-size: 20px;
+            width: 30%;
+        }    
+        .destination > span:first-child > span { 
+            color: #fff; 
+            padding: 0 7px;
+            background-color: #fd8585; 
+            border-radius: 4px;
+         }
+        .destination > span:nth-child(2) { 
+            text-decoration: line-through;
+            width: 10%;
+            text-align: right;
+            color: #6f6f6f;
+            font-size: 15px;
+            margin: 0 5px 0 0;
+         }
+        .destination > span:last-child { 
+            font-size: 22px; 
+            color: #f46262;
+            width: 20%;
+            text-align: left;
+        }
+        .dotted {
+            font-weight: bold;
+            font-size: 24px
+        }
+        .fakeLink {
+            color: #245bff;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0 0 0;
+            font-weight: bold;
+        }
+    </style>
+
+    <!-- Mettre DOM pour modal grand format ici -->
+    <div class="illustration"></div>
+    <div class="wrapper">
+        <div class="titre">!! NOS SUPER PROMOS !!</div>
+        <div class="destination">
+            <span><span>DUBAI</span></span>
+            <span>799€</span>
+            <span>499€</span>
+        </div>
+        <div class="destination">
+            <span><span>HAMMAMET</span></span>
+            <span>389€</span>
+            <span>259€</span>
+        </div>
+        <div class="destination">
+            <span><span>CANCUN</span></span>
+            <span>889€</span>
+            <span>509€</span>
+        </div>
+        <div class="destination">
+            <span><span>BANGKOK</span></span>
+            <span>1099€</span>
+            <span>829€</span>
+        </div>
+        <div class="dotted">...</div>
+        <div class="fakeLink">Et plein d'autres destinations à voir ici !</div>
+    </div>
+    
+</script>
