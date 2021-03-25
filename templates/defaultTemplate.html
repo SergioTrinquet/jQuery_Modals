@@ -2,28 +2,35 @@
 <script id="tpl_default" type="text/html" >
 
     <style>
+        .frame {
+            border: dotted 2px red;
+            color: #233578;
+            padding: 12px 10%;
+        }
         .titre { 
             color: #ff0000; 
             font-size: 20px;
+            font-weight: bold;
         }
         .contenu {
             text-align: center; 
-            margin: 20px 0;
+            margin: 15px 0 30px 0;
             font-size: 18px;
             line-height: 24px;
         }
         span { 
-            background-color: red; 
-            color: #ffffff; 
+            background-color: #354b9b;
+            color: #ffffff;
+            padding: 0 5px;
         }
     </style>
 
     
     <!-- Mettre DOM pour modal format original ici -->
-    <div class="titre">!! FORMAT ORIGINAL !!</div>
-    eeeeeeee
-    <div class='contenu'>XXX Sit est nunc, <span>metus</span> vulputate facilisis. Sociis varius ac, viverra aliquet in nam sociosqu commodo</div>
-
+    <div class="frame">
+        <div class="titre">INFORMATION CORONAVIRUS</div>
+        <div class="contenu">Face au Coronavirus, il existe des <br/><span>gestes simples pour se protéger et protéger les autres</span></div>
+    </div>
         <!-- <style>.titre { color: purple;  font-size: 40px; }</style> -->
 </script>
 
@@ -31,15 +38,14 @@
 <script id="tpl_redim" type="text/html" >
 
     <style>
-        span { 
-            color: purple; 
-            background-color: orange; 
-        }    
+        .img {
+            background: center / contain no-repeat url("images/coronavirus_gestes_barrieres.png");
+            height: 630px;
+            height: 80vh;
+        }   
     </style>
 
-    <!-- Mettre DOM pour modal grand format ici -->
-    <div>
-        GRAND FORMAT : <span>TEXTE EN ENTIER</span> : Attention, la société SORIN est de nouveau en mesure de vous livrer les commandes des consommables auto transfusion ELECTA depuis le 25 mai 2012.<br/>Attention, la société SORIN est de nouveau en mesure de vous livrer les commandes des consommables auto transfusion ELECTA depuis le 25 mai 2012.<br/>Attention, la société SORIN est de nouveau en mesure de vous livrer les commandes des consommables auto transfusion ELECTA depuis le 25 mai 2012.
-    </div>
+    <!-- DOM pour modal grand format ici -->
+    <div class="img"></div>
     
 </script>

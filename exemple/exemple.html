@@ -72,26 +72,30 @@
         </div>
     </div>
 
-    <!-- JS pour transformer les div plus haute en fenêtres modales -->
+    <!-- JS pour transformer potentiellement des balises DOM en fenêtres modales -->
     <script type="text/javascript">
         $('#exemple_modal_1').setModal({
             position: "block",
             originalWidth: "100%",
             redim: true,
-            redimWidth: "90%",
+            redimWidth: "calc(80vh / 1.25)",
+            //redimWidth: "calc(100vh)",
             animationSpeed: 800,
             shadow: true,
             closable: true,
-            /* bgColor: "#3652a0", */
-            bgColor: "-moz-linear-gradient(-45deg, #1e5799 0%, #7db9e8 100%)",
+            background: "linear-gradient(157deg, rgba(187,206,231,1) 0%, rgba(223,230,239,1) 100%)",
             margin: "0 0 20px 0",
-            padding: "0",
+            padding: "10px",
             borderRadius: 3,
-            redimLinkText: 'Agrandir !!', 
+            redimLinkText: 'Découvrez-les ici', 
             redimLinkType: 'link', 
             redimLinkStyle: {
                 "font-weight": "bold",
-                "color": "#fff"
+                "color": "#ff0000",
+                "position": "absolute",
+                "transform": "translate(-50%, -50%)",
+                "font-size": "16px",
+                "margin":" -22px 0 0 0"
             }
         });
 
@@ -117,7 +121,7 @@
             redim: true,
             redimWidth: "80%",
             animationSpeed: 1000,
-            bgColor: "rgb(249, 46, 46)",
+            background: "rgb(249, 46, 46)",
             margin: "10px 20px 10px 0",
             borderRadius: 15,
             shadow: true,
