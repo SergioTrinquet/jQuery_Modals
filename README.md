@@ -186,12 +186,12 @@ URL relative des templates accueillant le contenu HTML et la mise en forme CSS d
 
 Affiche une croix en haut à droite de la fenêtre modale dans son état initial (pas redimensionné). Lorsque l'on clique dessus, la fenêtre en question se ferme. 
 
-### bgColor
+### background
 **Type**: *string*  
 **Valeur par défaut**: *"#efefef"*
 
-Détermine la/les couleur(s) de fond de l'encart.  
-Cette option joue sur la propriété CSS 'background-color' : Il est donc possible de réaliser des dégradés, et de jouer sur l'opacité de la couleur de fond (ex: *rgba(255, 255, 255, 0.5)*).
+Détermine la propriété CSS 'background' de l'encart.
+Elle permet donc d'appliquer une couleur ou des dégradés, et de jouer sur leur opacité (ex: *rgba(255, 255, 255, 0.5)*), ou bien encore d'intégrer une image de fond (ex: *url("test.jpg") repeat-y;*).
 
 ### padding
 **Type**: *string*  
