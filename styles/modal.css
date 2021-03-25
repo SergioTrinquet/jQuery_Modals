@@ -1,9 +1,9 @@
 /* Pour éviter au début quand on est en haut de page, de scroller vers le bas avant la fin de l'animation */
-html.noscroll {
+/*html.noscroll {
     height: 100vh;
     overflow-y: hidden;
-    padding-right: 15px; /* Avoid width reflow */
-}
+    padding-right: 15px; /* Avoid width reflow *//*
+}*/
 
 .msk {
     position: fixed;
