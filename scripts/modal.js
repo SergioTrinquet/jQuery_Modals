@@ -38,8 +38,8 @@
         { options: ["redimLinkStyle"], type: "object" }
     ];
     var widthOptions = ["originalWidth", "redimWidth"];
-    var regexFormatWidth = new RegExp(/^[0-9]+(px|pt|pc|in|cm|mm|em|ex|ch|rem|vw|vh|vmin|vmax|%)$|^calc\(.+\)$/);
-                    
+    var regexFormatWidth = new RegExp(/^[0-9]+(px|pt|pc|in|cm|mm|em|ex|ch|rem|vw|vh|vmin|vmax|%)$|^calc\(.+\)$/); // Pour valider ou non option de largeur
+    var regexCSScalc = new RegExp(/^calc\(.+\)$/); // pour savoir si la propr. 'calc()' est utilisée dans option 'redimWidth'               
     
 
     /*======== Pour empecher de scroller =======*/
@@ -55,6 +55,7 @@
     }
     /*======== FIn Pour empecher de scroller =======*/
 
+    
     $.fn.setModal = function(customSettings) {
         //console.warn(this); //TEST
 
@@ -103,8 +104,7 @@
                     this.DOMtag = null,
                     this.dimensions = {
                         height: 0,
-                        width: 0,
-                        absoluteWidth: 0
+                        width: 0
                     }
                     this.positions = {
                         top: 0,
@@ -112,20 +112,26 @@
                     }
                 }
 
-                // Pour prélever Hauteur et Largeur en px de l'élément passé en paramètre
-                Modal.prototype.getSize = function(typeWidth) {
-                    //console.log(this.DOMtag.is("#clone_modal") ? "getSize sur le clone" : "getSize sur l'original"); //TEST
+
+                // Pour prélever Hauteur et Largeur en valeur absolue ou relative
+                Modal.prototype.getSize = function() {
+                    //== Hauteur ==//
                     this.dimensions.height = this.DOMtag.outerHeight();
-                    if(typeWidth == 'absoluteWidth') {
-                        this.dimensions.absoluteWidth = this.DOMtag.outerWidth(); // 'width' en px
-                    } else if(typeWidth === undefined) {
-                        this.dimensions.width = this.DOMtag.is("#clone_modal") ? goodSettings.redimWidth : goodSettings.originalWidth; // Affecte 'width' que ce soit en unité relative (ex: %) ou absolue (ex: px)
+                    //== Largeur ==//
+                    // S'il s'agit de l'encart original ou bien
+                    // si 'calc()' utilisé pour déterminer 'width', bug avec jQuery '.animate()' donc on est obligé de prendre la largeur en 'px'...
+                    if(!(this.DOMtag.is("#clone_modal")) || regexCSScalc.test(goodSettings.redimWidth)) {
+                        this.dimensions.width = this.DOMtag.outerWidth(); // 'this.dimensions.width' obligatoirement en px
+                    // ...Et s'il s'agit de l'encart cloné...
+                    } else if(this.DOMtag.is("#clone_modal")) {
+                        this.dimensions.width = goodSettings.redimWidth; // ...'this.dimensions.width' avec valeur 'width' entrée par l'utilisateur, qu''elle soit exprimée en unité relative (ex: %) ou absolue (ex: px)
                     }
-                    console.warn("this.dimensions.height : " + this.dimensions.height + "\
-                                | this.dimensions.width : " + this.dimensions.width + "\
-                                | this.dimensions.absoluteWidth : " + this.dimensions.absoluteWidth); //TEST 
+
+                    //TEST 
+                    //console.warn("this.dimensions.height : " + this.dimensions.height + " | this.dimensions.width : " + this.dimensions.width);
                 }
-            
+
+
 
                 // Pour obtenir position en px d'un encart
                 Modal.prototype.getPosition = function() {
@@ -263,7 +269,6 @@
                         
                         
                         self.templatesText = templates;
-                        //self.redimOrNot();
                         self.getLinkToRedim();
 
                         // Insertion texte + optionnellement le lien pour afficher l'intégralité du message dans l'encart Big
@@ -316,12 +321,6 @@
                     var clone = new CloneModal();
                     clone.init(this.DOMtag, text, this.key);
                 }
-
-                /* OriginalModal.prototype.redimOrNot = function() {
-                    if(goodSettings.redim) { // Si option redim à 'true'
-                        this.getLinkToRedim(); // Affectation valeur à lien pour redimensionner
-                    } 
-                } */
 
                 // Gestion lien pour agrandir encart
                 OriginalModal.prototype.getLinkToRedim = function() {
@@ -383,14 +382,14 @@
                         .attr('id', key + suffix) // Pour scoper le CSS du template
                         .html(ejs.render(text));
 
-                    // Affectation d'un identifiant unique pour l'icone qui ferme l'encart Big..., et création event dessus
+                    // Modification sur l'icone qui ferme l'encart Big..., et création event dessus
                     this.btGetSmall = this.DOMtag
                         .find('#closeShortMsg')
                         .removeClass()
                         .addClass('fas fa-compress-arrows-alt')
                         .attr({ id: 'IconeResizeSmall', title: 'Réduire cette fenêtre' });
                     
-                    // Evenement sur bt pour redimensionner l'encart 
+                    // Evenement sur bouton pour redimensionner l'encart 
                     var self = this;
                     this.btGetSmall.on('click', function() { self.redim_Small() });
 
@@ -398,35 +397,18 @@
                     // Shadow sur encart originel si paramétré de la sorte, sinon encart disparait
                     originModal.display(false);
 
-
-                    // Ici récup. des données 'positions' et 'dimensions' de l'encart redimensionné avec contenu adéquat (mais pas encore visible) 
+                    // Récup. des données 'positions' et 'dimensions' de l'encart redimensionné avec contenu adéquat (mais pas encore visible) 
                     // qui vont servir ensuite pour l'animation qui suit (de l'état 'par défaut' vers l'état 'redimensionné')
                     this.getPosition();
-                    //this.getSize(); // Mise en comm; le 25/03/21
-    ///// Ajouté le 25/03/21
-    console.warn("goodSettings.redimWidth >>>>>>>>>", goodSettings.redimWidth); //TEST
-    var rgx = new RegExp(/^calc\(.+\)$/);
-    if(rgx.test(goodSettings.redimWidth)) {
-        console.log("Il y a du 'calc()'"); //TEST
-        this.getSize("absoluteWidth");
-        //console.log("this.dimensions.absoluteWidth ======> ", this.dimensions.absoluteWidth); //TEST
-        this.dimensions.width = this.dimensions.absoluteWidth;
-    } else {
-        console.log("QUE DALLE"); 
-        this.getSize();
-    }
-    ///// FIN ajout le 25/03/21
+                    this.getSize(); // Récupération des dimensions de l'encart cloné avec largeur en valeur relative ou absolue selon saisie de l'utilisateur dans option
 
-                    console.log("ALLER >>>>> this.positions", this.positions); console.log("ALLER >>>>> this.dimensions", this.dimensions);  //TEST
-
-                    // Récupération de la position du modal original avec le contenu chargé
-                    originModal.getPosition();
-                    originModal.getSize("absoluteWidth"); // Récupération des dimensions du modal original avec le contenu chargé
+                    originModal.getPosition(); // Récupération de la position de l'encart original
+                    originModal.getSize(); // Récupération des dimensions de l'encart original avec largeur en valeur absolue (px)
 
                     // On affiche l'encart cloné avec les dimensions et positions de l'encart original, et on cache son contenu 
                     this.DOMtag
                         .outerHeight(originModal.dimensions.height)
-                        .outerWidth(originModal.dimensions.absoluteWidth) // Permet de remplacer le Pourcentage de la largeur si c'est le cas, par une valeur en px
+                        .outerWidth(originModal.dimensions.width) // Ici si largeur était exprimée en valeur relative (pourcentage/vw,...), est remplacé par une valeur en px
                         .css({ 'top': originModal.positions.top, 'left': originModal.positions.left })
                         .removeClass('Hidden setCentralPosition')
                         .children().addClass('Hidden');
@@ -464,15 +446,16 @@
                     // Ascenceur de la fenetre inactif durant transition
                     disableScroll();
                     
-                    // Récupérations des coordonnées (positions et dimensions) de l'encart cloné
+                    // Récupération positions de l'encart cloné
                     this.getPosition();
-                    //console.log("RETOUR >>>>> (CloneModal début) this.positions", this.positions); console.log("RETOUR >>>>> (CloneModal début) this.dimensions", this.dimensions);  //TEST
-                    
 
                     // Modif CSS sur l'encart cloné avant début transition afin que celle-ci puisse se faire
                     this.DOMtag
                         .removeClass('setCentralPosition')
-                        .css({ top: this.positions.top, left: this.positions.left })
+                        .css({ 
+                            top: this.positions.top, 
+                            left: this.positions.left 
+                        })
                         .children().addClass('Hidden'); // Encart redimensionné : Pour sa transition, on masque son contenu
 
 
@@ -480,9 +463,7 @@
                     // Recalcul car peut avoir changée entre 1er click pour redimensionner l'encart et celui-ci pour le réduire 
                     // (ex: scroll sur la page peut avoir changé la position, ou/et changement taille de la fenetre peut avoir changé la taille si est exprimée en pourcentage par ex.) 
                     originModal.getPosition(); 
-                    originModal.getSize("absoluteWidth");
-                    //console.log("RETOUR >>>>> (originalModal) originModal.positions => From", this.positions, "To", originModal.positions); // TEST
-                    //console.log("RETOUR >>>>> (originalModal) originModal.dimensions => From", this.dimensions, "To", originModal.dimensions);  //TEST
+                    originModal.getSize(); // Ici récupération de la Largeur en valeur absolue (px) et non relative, même si l'utilisateur a rempli l'option ''originalWidth en valeur relative (%, vw, em,...) car l'encart à redimensionner est un enfant direct du tag 'body', ce qui n'est p-ê pas le cas de l'encart original dont il doit prendre les dimensions en fin de transition
 
 
                     // Retour aux dimensions et positions de l'encart original
@@ -490,15 +471,13 @@
                         { 
                             left: originModal.positions.left,
                             top: originModal.positions.top,
-                            width: originModal.dimensions.absoluteWidth, 
-                            height: originModal.dimensions.height,
-                            //width: originModal.DOMtag.outerWidth(), // Valeur désirée en px et non relative en % car l'encart à redimensionner est un enfant direct du tag 'body', ce qui n'est p-ê pas le cas de l'encart original dont il doit prendre les dimensions en fin de transition
-                            //height: originModal.DOMtag.outerHeight() 
+                            width: originModal.dimensions.width, 
+                            height: originModal.dimensions.height
                         }, 
                         goodSettings.animationSpeed,
                         function () {
-                            Mask.display(false);  // Disparition du masque
-
+                            // Disparition du masque
+                            Mask.display(false);
                             // FadeOut sur l'encart Big une fois redimensionné, puis suppression
                             $(this).fadeOut('300', function () { $(this).remove(); });
                             // Réapparition encart original
