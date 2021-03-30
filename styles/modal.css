@@ -1,10 +1,3 @@
-/* Pour éviter au début quand on est en haut de page, de scroller vers le bas avant la fin de l'animation */
-/*html.noscroll {
-    height: 100vh;
-    overflow-y: hidden;
-    padding-right: 15px; /* Avoid width reflow *//*
-}*/
-
 .msk {
     position: fixed;
     z-index:10000;
@@ -98,50 +91,52 @@
     filter: brightness(75%);
 }
 
-[data-modal="true"] #closeShortMsg {
+
+[data-modal="true"] #closeShortMsg:before,
+[data-modal="true"] #IconeResizeSmall:before {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(0,0,0,0.7);
+}
+[data-modal="true"] #closeShortMsg,
+[data-modal="true"] #IconeResizeSmall {
 	position:absolute;
+    top: 0;
+    right: 0;
 	cursor: pointer;
-	top:15px;
-    right:15px;
+    color: #fff;
+}
+[data-modal="true"] #closeShortMsg:hover,
+[data-modal="true"] #IconeResizeSmall:hover {
+    transform: scale(1.15);
+}
+
+[data-modal="true"] #closeShortMsg:before {
+    top: -11px;
+    left: -11px;
+    padding: 4px;
+    width: 13px;
+    text-align: center;
+}
+[data-modal="true"] #closeShortMsg {
+    font-size: 14px;
+    transition: all 0.2s ease-in-out;
+    /* z-index: 10002; */
 }
 [data-modal="true"] #closeShortMsg.hidden { 
     opacity: 0; 
     cursor: default; 
 }
 
-[data-modal="true"] #IconeResizeSmall {
-    cursor: pointer;
-    height: 15px;
-    width: 15px;
-    position: absolute;
-    right: 18px;
-    top: 18px;
-    z-index: 3;
-    transition: all 0.15s ease-in-out;
+[data-modal="true"] #IconeResizeSmall:before {
+    top: -17px;
+    left: -17px;
+    padding: 10px;
 }
-[data-modal="true"] #IconeResizeSmall:hover {
-    transform: scale(1.2);
+[data-modal="true"] #IconeResizeSmall {
+    font-size: 15px;
 }
 
-/* AJOUT LE 22/03/21 */
-[data-modal="true"] #IconeResizeSmall:before {
-    font-style: "font-awesome";
-    color: #fff;
-    content: "\f78c";
-    top: -15px;
-    left: -7px;
-    border-radius: 50%;
-    padding: 10px;
-    position: absolute;
-    z-index: 999;
-    background-color: rgba(0,0,0,0.7);
-}
-[data-modal="true"] #IconeResizeSmall {
-    right: -2px;
-    top: -2px;
-    z-index: 1000;
-}
-/* FIN AJOUT LE 22/03/21 */
 
 [data-modal="true"].transition :not(.Hidden) {
     transition: all 0.2s ease-in-out;
@@ -154,7 +149,7 @@
 }
 
             
-[data-modal="true"]#clone_modal {
+[data-modal="true"][id^="clone_modal"] {
     position: fixed;
     z-index:10001;
     margin-top: auto;
@@ -167,7 +162,7 @@
     box-shadow: 0 0 15px 0 #444444;
     display: block;
 }
-[data-modal="true"]#clone_modal.setCentralPosition {
+[data-modal="true"][id^="clone_modal"].setCentralPosition {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
