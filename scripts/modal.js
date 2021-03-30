@@ -311,7 +311,7 @@
     
 
 
-    CloneModal.prototype.init = function(originalModal, text) {     console.log("Dans 'CloneModal.prototype.init' : originalModal.key", originalModal.key); //TEST
+    CloneModal.prototype.init = function(originalModal, text) {
         var settings = originalModal.settings;
         var key = originalModal.key;
     
@@ -400,7 +400,7 @@
 
 
     // lorsque click sur modal cloné pour retourner au modal original
-    CloneModal.prototype.redimToOriginalSize = function(originModal) {      console.log("Dans 'CloneModal.prototype.redimToOriginalSize' : originModal.key", originModal.key); //TEST
+    CloneModal.prototype.redimToOriginalSize = function(originModal) {
         // Ascenceur de la fenetre inactif durant transition
         disableScroll();
         
