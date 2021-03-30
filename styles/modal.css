@@ -1,4 +1,4 @@
-.msk {
+.overlay {
     position: fixed;
     z-index:10000;
     top: 0;
@@ -9,7 +9,7 @@
     opacity:0;
     transition: opacity 0.4s ease-in-out;
 }
-.msk.display {
+.overlay.display {
     width: 100%;
     height: 100%;
     opacity: 0.6;
@@ -142,7 +142,7 @@
     transition: all 0.2s ease-in-out;
 } 
 [data-modal="true"].Hidden,
-[data-modal="true"] .Hidden  {
+[data-modal="true"] .Hidden {
     filter:alpha(opacity=0);
 	-moz-opacity:0;
     opacity:0;

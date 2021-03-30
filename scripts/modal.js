@@ -50,7 +50,7 @@
         init: function() {
             var body = $('body');
             if(this.DOMelement == null) {  // Si la balise DOM pour overlay n'existe pas encore (1er appel de Overlay.init())...                      
-                this.DOMelement = $(document.createElement('div')).addClass('msk');
+                this.DOMelement = $(document.createElement('div')).addClass('overlay');
                 if(body.find(this.DOMelement).length == 0){ body.append(this.DOMelement) };
             }
             this.display(true);
