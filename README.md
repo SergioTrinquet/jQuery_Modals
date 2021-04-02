@@ -1,10 +1,11 @@
-# JQuery - fenêtre modale avec options
+# jQuery - fenêtre modale avec options
 
 
 ## Présentation
 
-Ce widget permet d'intégrer facilement des encarts qui peuvent au besoin se transformer en fenêtres modales. Le but ? Donner la possibilité à l'utilisateur d'afficher une grande quantité de contenu sans empiéter sur celui de la page principale. Cela peut servir pour une publicité, une information importante, une alerte,... Les applications sont multiples, à vous d'imaginer ce que vous pouvez faire.  
-Quelques exemples se trouvent dans un répertoire dédié à la racine du projet.  
+Ce widget permet d'intégrer facilement des encarts qui peuvent au besoin se transformer en fenêtres modales. Le but ? Donner la possibilité à l'utilisateur d'afficher une grande quantité de contenu sans empiéter sur celui de la page principale. Vous pouvez l'utiliser pour une publicité, une information à mettre en avant, une alerte,... Les applications sont multiples, à vous d'imaginer ce que vous pouvez faire.  
+[Cliquez ici pour voir quelques exemples](https://modal-jquery.web.app/exemple/index.html).
+Le code se trouve dans un répertoire dédié à la racine du projet.
 
 Ce qu'il est possible de faire :   
 
